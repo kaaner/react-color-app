@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { notification } from "antd";
+import { Layout, notification, Button } from "antd";
 
 import {
   initiateSocket,
@@ -13,6 +13,8 @@ import UserModal from "./components/UserModal";
 
 import UserModalContext from "./contexts/UserModalContext";
 
+const { Content, Header } = Layout;
+
 const openNotificationWithIcon = (type, message) => {
   notification[type]({
     message,
@@ -21,7 +23,7 @@ const openNotificationWithIcon = (type, message) => {
 
 function Container() {
   const [color, setColor] = useState("#FFFF00");
-  const { isModalVisible, setIsModalVisible } = useContext(UserModalContext);
+  const { setIsModalVisible } = useContext(UserModalContext);
 
   useEffect(() => {
     initiateSocket();
@@ -45,7 +47,7 @@ function Container() {
       openNotificationWithIcon("error", message);
       console.log(message);
     });
-  }, []);
+  }, [setIsModalVisible]);
 
   const handleClick = () => {
     console.log(color);
@@ -53,14 +55,21 @@ function Container() {
   };
 
   return (
-    <div className="App" style={{ backgroundColor: color }}>
-      <UserModal />
-      <input
-        type="color"
-        value={color}
-        onChange={(e) => setColor(e.target.value)}
-      />
-      <input type="button" value="change color" onClick={handleClick} />
+    <div className="App">
+      <Layout className="layout">
+        <Header style={{ backgroundColor: color }}>
+          <UserModal />
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+          />
+          <Button type="default" size="large" onClick={handleClick}>
+            Change
+          </Button>
+        </Header>
+        <Content style={{ backgroundColor: color }}></Content>
+      </Layout>
     </div>
   );
 }
